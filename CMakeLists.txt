@@ -20,13 +20,10 @@ endif()
 
 project(unit VERSION "0.1")
 
-#set(CMAKE_C_COMPILER "gcc-7")
-#set(CMAKE_CXX_COMPILER "/usr/bin/g++-7")
-
 set(ENABLE_TESTING TRUE)
 
 include(CheckCXXCompilerFlag)
-include(build/cmake/macros.cmake)
+#include(build/cmake/macros.cmake)
 
 enable_language(C)
 enable_language(CXX)
@@ -94,18 +91,16 @@ add_definitions(-DWIN32)
 add_definitions(-DWIN32_LEAN_AND_MEAN)
 add_definitions(-D_USE_MATH_DEFINES)
 add_definitions(-DNOMINMAX)
-add_definitions(-DqWinOS=1)
-add_definitions(-DqWinUniversal=1)
+#add_definitions(-DqWinOS=1)
+#add_definitions(-DqWinUniversal=1)
 add_definitions(-D_CONSOLE)
 
 add_definitions(-D_VISUALC_)
 add_definitions(-DNeedFunctionPrototypes)
 add_definitions(-D_AFXDLL)
 add_definitions(-DRMT_DLL)
-add_definitions(-D_HAS_AUTO_PTR_ETC=1)
+#add_definitions(-D_HAS_AUTO_PTR_ETC=1)
 
-# to avoid solution file change use fixed mipl guid
-set(${PROJECT_NAME}_GUID_CMAKE "384A545C-A6F2-4833-9260-F0F1F2F3F4F5" CACHE INTERNAL "Project GUID")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 
 elseif(LINUX)
@@ -113,7 +108,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -Wno-sign-compare -flax-vector-conversions -fpermissive -msse4.1 -Wno-unused-parameter -Wno-sign-compare -Wno-unused-function -Wno-unused-variable -Wno-error=unused-variable -Wno-error=unused-parameter -Wno-error=sign-compare -Wno-error=pointer-sign")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -ldl -fPIE -pie")
 set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIE -pie")
-#set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic")
 endif()
 
 set(TARGET_FILENAME target_unit.cmake)
@@ -131,8 +125,6 @@ message( STATUS "CMAKE_PREFIX_PATH:" ${CMAKE_PREFIX_PATH})
 message( STATUS "G_BIN_DIR: " ${G_BIN_DIR})
 message( STATUS "COMPILER: " ${CMAKE_CXX_COMPILER_ID})
 message( STATUS "TARGET:" ${TARGET_FILENAME})
-
-add_definitions(-DPRODUCT_ID_${PRODUCT_ID})
 
 file(MAKE_DIRECTORY ${G_BIN_DIR})
 
