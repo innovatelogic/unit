@@ -22,7 +22,7 @@ project(unit VERSION "0.1")
 
 set(ENABLE_TESTING TRUE)
 
-include(CheckCXXCompilerFlag)
+#include(CheckCXXCompilerFlag)
 #include(build/cmake/macros.cmake)
 
 enable_language(C)
@@ -104,7 +104,11 @@ add_definitions(-DRMT_DLL)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 
 elseif(LINUX)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+if(CMAKE_COMPILER_IS_GNUCC)
+  set(CMAKE_INCLUDE_SYSTEM_FLAG_C "-isystem ")
+endif()
+#set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -Wno-sign-compare -flax-vector-conversions -fpermissive -msse4.1 -Wno-unused-parameter -Wno-sign-compare -Wno-unused-function -Wno-unused-variable -Wno-error=unused-variable -Wno-error=unused-parameter -Wno-error=sign-compare -Wno-error=pointer-sign")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -ldl -fPIE -pie")
 set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIE -pie")

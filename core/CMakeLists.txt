@@ -12,6 +12,16 @@ message( STATUS "Python3 found: " ${Python3_Development_FOUND} )
 message( STATUS "Python3_INCLUDE_DIR: " ${Python3_INCLUDE_DIRS} )
 message( STATUS "Python3_LIBRARIES: " ${Python3_LIBRARIES} )
 
+if (LINUX)
+find_package(MAVSDK REQUIRED)
+set(MAVLINK_LIBS 
+    MAVSDK::mavsdk
+    MAVSDK::mavsdk_action
+    MAVSDK::mavsdk_telemetry
+)
+endif()
+
+
 include_directories(include)
 include_directories(src)
 
@@ -35,7 +45,10 @@ ${CMAKE_SOURCE_DIR}/third_party
 ${Python3_INCLUDE_DIRS}
  )
 
-target_link_libraries(${PROJECT_NAME} ${Python3_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} 
+${Python3_LIBRARIES}
+${MAVLINK_LIBS}
+)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY ${G_BIN_DIR}

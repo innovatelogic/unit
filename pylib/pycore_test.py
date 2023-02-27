@@ -10,3 +10,5 @@ if __name__ == "__main__":
     unit_core.test_func_eigen(2, 2)
 
     unit_core.test_func_xtensor(2, 2)
+
+    unit_core.test_mavlink(str("serial:///dev/ttyUSB0:57600"))
