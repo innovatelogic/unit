@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 #ifdef _MSC_VER
 #define ES_MSVC
 #elif defined(__ghs__)
@@ -9,6 +10,7 @@
 #elif
 #error "Unknown compiler"
 #endif
+*/
 
 // define MIPL_TEST_COMPILE if you want use some piece of mipl sources in your test project
 #if !defined(UNIT_TEST_COMPILE) && defined(_WIN32)

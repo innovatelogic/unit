@@ -20,6 +20,9 @@ endif()
 
 project(unit VERSION "0.1")
 
+#set(CMAKE_C_COMPILER "gcc-7")
+#set(CMAKE_CXX_COMPILER "/usr/bin/g++-7")
+
 set(ENABLE_TESTING TRUE)
 
 include(CheckCXXCompilerFlag)
@@ -106,11 +109,11 @@ set(${PROJECT_NAME}_GUID_CMAKE "384A545C-A6F2-4833-9260-F0F1F2F3F4F5" CACHE INTE
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 
 elseif(LINUX)
-
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++17 -Ofast -w -Wall -Wno-sign-compare -flax-vector-conversions -fpermissive -msse4.1 -Wno-unused-parameter -Wno-sign-compare -Wno-unused-function -Wno-unused-variable -Wno-error=unused-variable -Wno-error=unused-parameter -Wno-error=sign-compare -Wno-error=pointer-sign")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl")
-set(CMAKE_C_FLAGS  "${CMAKE_CXX_FLAGS}")
-
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+#set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -Wno-sign-compare -flax-vector-conversions -fpermissive -msse4.1 -Wno-unused-parameter -Wno-sign-compare -Wno-unused-function -Wno-unused-variable -Wno-error=unused-variable -Wno-error=unused-parameter -Wno-error=sign-compare -Wno-error=pointer-sign")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -ldl -fPIE -pie")
+set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIE -pie")
+#set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic")
 endif()
 
 set(TARGET_FILENAME target_unit.cmake)
