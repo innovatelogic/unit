@@ -15,9 +15,13 @@
 #include <mavsdk/mavsdk.h>
 #include <mavsdk/plugins/mavlink_passthrough/mavlink_passthrough.h>
 #include <mavsdk/plugins/telemetry/telemetry.h>
+
+#include <mavlink/v2.0/minimal/mavlink.h>
 #endif //__linux__
 
 #include "core.h"
+
+#define BUFFER_LENGTH 2041 // minimum buffer size that can be used with qnx
 
 namespace core
 {
@@ -101,6 +105,20 @@ void UCore::test_mavlink(const std::string &url)
     std::cout << "Test call MAVSDK(empty) CPP : " << url << std::endl;
 #endif
 }
+
+void UCore::test_mavlink_v2(const std::string &str)
+{
+#if __linux__ 
+    std::cout << "Test call MAVLINK CPP : " << str << std::endl;
+
+    uint8_t buf[BUFFER_LENGTH];
+    mavlink_message_t msg;
+
+    mavlink_msg_heartbeat_pack(1, 200, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED, 0, MAV_STATE_ACTIVE);
+	auto len = mavlink_msg_to_send_buffer(buf, &msg);
+#endif
+}
+
 }
 
 void test_func_cpp(int a, int b)
@@ -121,4 +139,5 @@ PYBIND11_MODULE(unit_core, m)
     m.def("test_func_eigen", &core::UCore::test_func_eigen, "cpp eigen test call");
     m.def("test_func_xtensor", &core::UCore::test_func_xtensor, "cpp xtensor test call");
     m.def("test_mavlink", &core::UCore::test_mavlink, "cpp mavlink test call");
+    m.def("test_mavlink_v2", &core::UCore::test_mavlink_v2, "cpp mavlink v2 test call");
 }
