@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(unit_core)
 
+set(ENABLE_TESTING TRUE)
+
 find_package(Python3 3.8...3.11.2 REQUIRED COMPONENTS Interpreter Development)
 
 add_definitions(-DUNIT_CORE_LIB_COMPILE)
@@ -76,4 +78,6 @@ add_custom_command(TARGET ${PROJECT_NAME}
                     ${CMAKE_SOURCE_DIR}/pylib/pycore_test.py
                     ${G_BIN_DIR}/pycore_test.py
                     )
+
+add_subdirectory(ut)
 

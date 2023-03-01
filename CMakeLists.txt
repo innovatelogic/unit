@@ -91,15 +91,11 @@ add_definitions(-DWIN32)
 add_definitions(-DWIN32_LEAN_AND_MEAN)
 add_definitions(-D_USE_MATH_DEFINES)
 add_definitions(-DNOMINMAX)
-#add_definitions(-DqWinOS=1)
-#add_definitions(-DqWinUniversal=1)
 add_definitions(-D_CONSOLE)
-
 add_definitions(-D_VISUALC_)
 add_definitions(-DNeedFunctionPrototypes)
 add_definitions(-D_AFXDLL)
 add_definitions(-DRMT_DLL)
-#add_definitions(-D_HAS_AUTO_PTR_ETC=1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 
@@ -115,9 +111,11 @@ set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIE -pie")
 endif()
 
 set(TARGET_FILENAME target_unit.cmake)
+set(TARGET_DEP_FILENAME target_unit.cmake)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(G_BIN_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/bin)
+set(G_LIB_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lib)
 
 message( STATUS "CMAKE_COMMAND: " ${CMAKE_CURRENT_SOURCE_DIR} )
 message( STATUS "EXECUTABLE_OUTPUT_PATH:" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
@@ -130,14 +128,26 @@ message( STATUS "COMPILER: " ${CMAKE_CXX_COMPILER_ID})
 message( STATUS "TARGET:" ${TARGET_FILENAME})
 
 file(MAKE_DIRECTORY ${G_BIN_DIR})
+file(MAKE_DIRECTORY ${G_LIB_DIR})
 
-find_file(TARGET_INCLUDE
-    ${TARGET_FILENAME}
-    ${CMAKE_SOURCE_DIR}
-    NO_DEFAULT_PATH)
+find_file(TARGET_DEP_INCLUDE ${TARGET_FILENAME} ${CMAKE_SOURCE_DIR} NO_DEFAULT_PATH)
+find_file(TARGET_INCLUDE ${TARGET_FILENAME} ${CMAKE_SOURCE_DIR} NO_DEFAULT_PATH)
 
 if (TARGET_INCLUDE)
+    message(STATUS "Found target dep include cmake: " ${TARGET_DEP_INCLUDE})
     message(STATUS "Found target include cmake: " ${TARGET_FILENAME})
+
+    configure_file(target_dep.cmake dep/CMakeLists.txt)
+
+    execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/dep")
+    #execute_process(COMMAND "${CMAKE_COMMAND}" --build . WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/dep")
+
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+    #source_group( "dep" FILES ${CMAKE_CURRENT_SOURCE_DIR}/utils/googletest/* )
+
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/utils/googletest" dep)
+ 
     include(${TARGET_INCLUDE})
 else()
     message(FATAL_ERROR "No target file:" ${TARGET_FILENAME})

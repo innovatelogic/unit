@@ -116,6 +116,9 @@ void UCore::test_mavlink_v2(const std::string &str)
 
     mavlink_msg_heartbeat_pack(1, 200, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED, 0, MAV_STATE_ACTIVE);
 	auto len = mavlink_msg_to_send_buffer(buf, &msg);
+
+	mavlink_status_t status;
+	mavlink_parse_char(MAVLINK_COMM_0, buf[0], &msg, &status);
 #endif
 }
 
