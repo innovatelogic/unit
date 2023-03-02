@@ -1,5 +1,25 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
+function(get_all_targets _result _dir)
+    get_property(_subdirs DIRECTORY "${_dir}" PROPERTY SUBDIRECTORIES)
+    foreach(_subdir IN LISTS _subdirs)
+        get_all_targets(${_result} "${_subdir}")
+    endforeach()
+    get_property(_sub_targets DIRECTORY "${_dir}" PROPERTY BUILDSYSTEM_TARGETS)
+    set(${_result} ${${_result}} ${_sub_targets} PARENT_SCOPE)
+endfunction()
+
+function(add_subdirectory_with_folder _folder_name _folder)
+    add_subdirectory(${_folder} ${ARGN})
+    get_all_targets(_targets "${_folder}")
+    foreach(_target IN LISTS _targets)
+        set_target_properties(
+            ${_target}
+            PROPERTIES FOLDER "${_folder_name}"
+        )
+    endforeach()
+endfunction()
+
 if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
     set(PLATFORM_ENV "linux")
@@ -28,7 +48,8 @@ set(ENABLE_TESTING TRUE)
 enable_language(C)
 enable_language(CXX)
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+#set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
 
 message(STATUS "CMAKE_STARTED:")
 
@@ -144,9 +165,7 @@ if (TARGET_INCLUDE)
 
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-    #source_group( "dep" FILES ${CMAKE_CURRENT_SOURCE_DIR}/utils/googletest/* )
-
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/utils/googletest" dep)
+    add_subdirectory_with_folder(dep "${CMAKE_CURRENT_SOURCE_DIR}/utils/googletest" EXCLUDE_FROM_ALL)
  
     include(${TARGET_INCLUDE})
 else()

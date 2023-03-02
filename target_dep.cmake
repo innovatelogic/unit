@@ -23,6 +23,7 @@ ExternalProject_Add(googletest
 			   -DBUILD_SHARED_LIBS=ON
 			   -DGTEST_CREATE_SHARED_LIBRARY=1
 			${ARGS_CMAKE_ARGS}# Disable install step
+	PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gtest
     INSTALL_COMMAND ""
 
     # Wrap download, configure and build steps in a script to log output
@@ -35,3 +36,9 @@ ExternalProject_Add(googletest
 
 #add_custom_target(googletest-download)
 #set_target_properties(googletest-download PROPERTIES FOLDER "UT" )
+
+#file(GLOB_RECURSE UI_IMPORT_MATH_SRCS
+#    "{CMAKE_CURRENT_SOURCE_DIR}/utils/*.*"
+#    )
+
+    #source_group(TREE "utils")
