@@ -12,6 +12,7 @@ public:
     static void test_func_xtensor(int a, int b);
     static void test_mavlink(const std::string &str);
     static void test_mavlink_v2(const std::string &str);
+    static void test_opencv(const std::string &path);
 
 protected:
 private:

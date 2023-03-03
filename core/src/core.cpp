@@ -5,6 +5,7 @@
 #include <future>
 #include <memory>
 #include <thread>
+#include <stdio.h>
 #include <Eigen/Dense>
 #include <pybind11/pybind11.h>
 #include "xtensor/xarray.hpp"
@@ -17,6 +18,8 @@
 #include <mavsdk/plugins/telemetry/telemetry.h>
 
 #include <mavlink/v2.0/minimal/mavlink.h>
+
+#include <opencv2/opencv.hpp>
 #endif //__linux__
 
 #include "core.h"
@@ -122,6 +125,24 @@ void UCore::test_mavlink_v2(const std::string &str)
 #endif
 }
 
+void UCore::test_opencv(const std::string &path)
+{
+#if __linux__ 
+    std::cout << "Test call opencv " << std::endl;
+
+    using namespace cv;
+    
+    Mat image;
+    image = imread( path.c_str(), 1 );
+    if ( !image.data )
+    {
+        std::cout << "No image data" << std::endl;
+        return;
+    }
+    std::cout << "image read ok" << std::endl;
+#endif
+}
+
 }
 
 void test_func_cpp(int a, int b)
@@ -143,4 +164,5 @@ PYBIND11_MODULE(unit_core, m)
     m.def("test_func_xtensor", &core::UCore::test_func_xtensor, "cpp xtensor test call");
     m.def("test_mavlink", &core::UCore::test_mavlink, "cpp mavlink test call");
     m.def("test_mavlink_v2", &core::UCore::test_mavlink_v2, "cpp mavlink v2 test call");
+    m.def("test_opencv", &core::UCore::test_opencv, "cpp opencv test call");
 }

@@ -14,3 +14,5 @@ if __name__ == "__main__":
     unit_core.test_mavlink(str("serial:///dev/ttyUSB0:57600"))
 
     unit_core.test_mavlink_v2(str("serial:///dev/ttyUSB0:57600"))
+
+    unit_core.test_opencv(str("data/test.jpg"))

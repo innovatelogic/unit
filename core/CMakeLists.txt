@@ -15,9 +15,11 @@ message( STATUS "Python3_INCLUDE_DIR: " ${Python3_INCLUDE_DIRS} )
 message( STATUS "Python3_LIBRARIES: " ${Python3_LIBRARIES} )
 
 if (LINUX)
+set("OpenCV_DIR" /mnt/d/Projects/opencv_build/opencv/build)
+find_package(OpenCV REQUIRED)
+
 find_package(MAVSDK REQUIRED)
-set(MAVLINK_LIBS 
-    MAVSDK::mavsdk
+set(MAVLINK_LIBS MAVSDK::mavsdk
     MAVSDK::mavsdk_action
     MAVSDK::mavsdk_telemetry
 )
@@ -45,11 +47,13 @@ add_library(${PROJECT_NAME} SHARED ${SRC_INCLUDES} ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE 
 ${CMAKE_SOURCE_DIR}/third_party
 ${Python3_INCLUDE_DIRS}
+${OpenCV_INCLUDE_DIRS}
  )
 
 target_link_libraries(${PROJECT_NAME} 
 ${Python3_LIBRARIES}
 ${MAVLINK_LIBS}
+${OpenCV_LIBS}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -78,6 +82,8 @@ add_custom_command(TARGET ${PROJECT_NAME}
                     ${CMAKE_SOURCE_DIR}/pylib/pycore_test.py
                     ${G_BIN_DIR}/pycore_test.py
                     )
+
+file(COPY ${CMAKE_SOURCE_DIR}/data DESTINATION ${G_BIN_DIR})
 
 add_subdirectory(ut)
 
