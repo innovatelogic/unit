@@ -1,0 +1,2 @@
+*.a filter=lfs diff=lfs merge=lfs -text
+libonnxruntime.so.1.15.0 filter=lfs diff=lfs merge=lfs -text

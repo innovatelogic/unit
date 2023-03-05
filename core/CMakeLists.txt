@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(unit_core)
 
+#include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake/modules/FindOpenCV.cmake)
+
 set(ENABLE_TESTING TRUE)
 
 find_package(Python3 3.8...3.11.2 REQUIRED COMPONENTS Interpreter Development)
@@ -15,14 +17,39 @@ message( STATUS "Python3_INCLUDE_DIR: " ${Python3_INCLUDE_DIRS} )
 message( STATUS "Python3_LIBRARIES: " ${Python3_LIBRARIES} )
 
 if (LINUX)
-set("OpenCV_DIR" /mnt/d/Projects/opencv_build/opencv/build)
-find_package(OpenCV REQUIRED)
+#set("OpenCV_DIR" /mnt/d/Projects/opencv_build/opencv/build)
+#find_package(OpenCV REQUIRED)
 
 find_package(MAVSDK REQUIRED)
 set(MAVLINK_LIBS MAVSDK::mavsdk
     MAVSDK::mavsdk_action
     MAVSDK::mavsdk_telemetry
 )
+
+
+set(ONNX_RUNTIME_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/third_party/onnxruntime/include)
+
+set(ONNX_LIBS 
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libre2.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libnsync_cpp.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnx_proto.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnx.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libprotoc.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libprotobuf.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime.so.1.15.0
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_session.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_framework.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_common.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_graph.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_util.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_optimizer.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_mlas.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_providers.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_test_utils.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_flatbuffers.a
+${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_mocked_allocator.a
+)
+
 endif()
 
 
@@ -46,14 +73,18 @@ add_library(${PROJECT_NAME} SHARED ${SRC_INCLUDES} ${SRC_FILES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE 
 ${CMAKE_SOURCE_DIR}/third_party
+${ONNX_RUNTIME_INCLUDE_DIR}
 ${Python3_INCLUDE_DIRS}
 ${OpenCV_INCLUDE_DIRS}
- )
+)
 
 target_link_libraries(${PROJECT_NAME} 
 ${Python3_LIBRARIES}
 ${MAVLINK_LIBS}
 ${OpenCV_LIBS}
+${ONNX_LIBS}
+pthread
+dl
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

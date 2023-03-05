@@ -17,7 +17,7 @@ set(UT_SOURCE
 
 add_executable(${PROJECT_TEST_NAME} ${UT_SOURCE})
 
-target_link_libraries(${PROJECT_TEST_NAME} ${PROJECT_NAME} gtest)
+target_link_libraries(${PROJECT_TEST_NAME} ${PROJECT_NAME} ${ONNX_LIBS} gtest pthread dl)
 
 add_definitions(-DUSE_MOCK)
 

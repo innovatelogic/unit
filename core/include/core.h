@@ -13,6 +13,7 @@ public:
     static void test_mavlink(const std::string &str);
     static void test_mavlink_v2(const std::string &str);
     static void test_opencv(const std::string &path);
+    static void test_onnx(const std::string &path);
 
 protected:
 private:

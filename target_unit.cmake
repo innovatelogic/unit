@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake/macros.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake/modules/FindOpenCV.cmake)
 
 set(CMAKE_SUPPRESS_REGENERATION true)
 

@@ -5,7 +5,9 @@
 #include <future>
 #include <memory>
 #include <thread>
+#include <string>
 #include <stdio.h>
+#include <vector>
 #include <Eigen/Dense>
 #include <pybind11/pybind11.h>
 #include "xtensor/xarray.hpp"
@@ -19,7 +21,9 @@
 
 #include <mavlink/v2.0/minimal/mavlink.h>
 
-#include <opencv2/opencv.hpp>
+//#include <opencv2/opencv.hpp>
+
+#include "core/session/experimental_onnxruntime_cxx_api.h"
 #endif //__linux__
 
 #include "core.h"
@@ -130,7 +134,7 @@ void UCore::test_opencv(const std::string &path)
 #if __linux__ 
     std::cout << "Test call opencv " << std::endl;
 
-    using namespace cv;
+ /*   using namespace cv;
     
     Mat image;
     image = imread( path.c_str(), 1 );
@@ -138,9 +142,39 @@ void UCore::test_opencv(const std::string &path)
     {
         std::cout << "No image data" << std::endl;
         return;
-    }
+    }*/
     std::cout << "image read ok" << std::endl;
 #endif
+}
+
+std::string print_shape(const std::vector<int64_t>& v) 
+{
+    std::stringstream ss("");
+    for (size_t i = 0; i < v.size() - 1; i++) {
+        ss << v[i] << "x";
+    }
+    ss << v[v.size() - 1];
+    return ss.str();
+}
+
+
+void UCore::test_onnx(const std::string &path)
+{
+
+    std::string model_file = path;
+
+    // onnxruntime setup
+    Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "example-model-explorer");
+    Ort::SessionOptions session_options;
+    Ort::Experimental::Session session = Ort::Experimental::Session(env, model_file, session_options);  // access experimental components via the Experimental namespace
+
+    // print name/shape of inputs
+    std::vector<std::string> input_names = session.GetInputNames();
+    std::vector<std::vector<int64_t> > input_shapes = session.GetInputShapes();
+    std::cout << "Input Node Name/Shape (" << input_names.size() << "):" << std::endl;
+    for (size_t i = 0; i < input_names.size(); i++) {
+        std::cout << "\t" << input_names[i] << " : " << print_shape(input_shapes[i]) << std::endl;
+    }
 }
 
 }
@@ -165,4 +199,5 @@ PYBIND11_MODULE(unit_core, m)
     m.def("test_mavlink", &core::UCore::test_mavlink, "cpp mavlink test call");
     m.def("test_mavlink_v2", &core::UCore::test_mavlink_v2, "cpp mavlink v2 test call");
     m.def("test_opencv", &core::UCore::test_opencv, "cpp opencv test call");
+    m.def("test_onnx", &core::UCore::test_onnx, "cpp onnx test call");
 }
