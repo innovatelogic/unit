@@ -1,18 +1,10 @@
 
-#include <iostream>
-#include <chrono>
-#include <cstdint>
-#include <future>
-#include <memory>
-#include <thread>
-#include <string>
-#include <stdio.h>
-#include <vector>
 #include <Eigen/Dense>
 #include <pybind11/pybind11.h>
 #include "xtensor/xarray.hpp"
 #include "xtensor/xio.hpp"
 #include "xtensor/xview.hpp"
+#include <geographiclib/Accumulator.hpp>
 
 #if __linux__
 #include <mavsdk/mavsdk.h>
@@ -27,6 +19,18 @@
 #endif //__linux__
 
 #include "core.h"
+
+#include <iostream>
+#include <chrono>
+#include <cstdint>
+#include <future>
+#include <memory>
+#include <thread>
+#include <string>
+#include <stdio.h>
+#include <vector>
+#include <iomanip>
+#include <exception>
 
 #define BUFFER_LENGTH 2041 // minimum buffer size that can be used with qnx
 
@@ -160,7 +164,6 @@ std::string print_shape(const std::vector<int64_t>& v)
 
 void UCore::test_onnx(const std::string &path)
 {
-
     std::string model_file = path;
 
     // onnxruntime setup
@@ -174,6 +177,25 @@ void UCore::test_onnx(const std::string &path)
     std::cout << "Input Node Name/Shape (" << input_names.size() << "):" << std::endl;
     for (size_t i = 0; i < input_names.size(); i++) {
         std::cout << "\t" << input_names[i] << " : " << print_shape(input_shapes[i]) << std::endl;
+    }
+}
+
+void UCore::test_geographicallib()
+{
+    try
+    {
+        std::cout << "Test call geographicallib CPP : " << std::endl;
+
+        // Compare using Accumulator and ordinary summation for a sum of large and
+        // small terms.
+        double sum = 0;
+        GeographicLib::Accumulator<> acc = 0;
+        sum += 1e20; sum += 1; sum += 2; sum += 100; sum += 5000; sum += -1e20;
+        acc += 1e20; acc += 1; acc += 2; acc += 100; acc += 5000; acc += -1e20;
+        std::cout << sum << " " << acc() << "\n";
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Caught exception: " << e.what() << "\n";
     }
 }
 
@@ -200,4 +222,5 @@ PYBIND11_MODULE(unit_core, m)
     m.def("test_mavlink_v2", &core::UCore::test_mavlink_v2, "cpp mavlink v2 test call");
     m.def("test_opencv", &core::UCore::test_opencv, "cpp opencv test call");
     m.def("test_onnx", &core::UCore::test_onnx, "cpp onnx test call");
+    m.def("test_geographicallib", &core::UCore::test_geographicallib, "cpp geographicallib test call");
 }

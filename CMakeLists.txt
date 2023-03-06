@@ -127,8 +127,9 @@ if(CMAKE_COMPILER_IS_GNUCC)
 endif()
 #set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -Wno-sign-compare -flax-vector-conversions -fpermissive -msse4.1 -Wno-unused-parameter -Wno-sign-compare -Wno-unused-function -Wno-unused-variable -Wno-error=unused-variable -Wno-error=unused-parameter -Wno-error=sign-compare -Wno-error=pointer-sign")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -ldl -fPIE -pie")
-set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIE -pie")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -w -Wall -ldl ") #-fPIE -pie
+set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS}") # -fPIE -pie
+#set(CMAKE_CXX_LINK_EXECUTABLE "{$CMAKE_CXX_LINK_EXECUTABLE} -R")
 endif()
 
 set(TARGET_FILENAME target_unit.cmake)

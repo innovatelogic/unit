@@ -50,6 +50,9 @@ ${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_flatbuffers.a
 ${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime_mocked_allocator.a
 )
 
+set(GEOGRAPHYCLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/third_party/georgraphiclib/include)
+set(GEOGRAPHYCLIB_LIBS ${CMAKE_SOURCE_DIR}/third_party/georgraphiclib/lib/libGeographicLib.so.23.1.0)
+
 endif()
 
 
@@ -76,12 +79,14 @@ ${CMAKE_SOURCE_DIR}/third_party
 ${ONNX_RUNTIME_INCLUDE_DIR}
 ${Python3_INCLUDE_DIRS}
 ${OpenCV_INCLUDE_DIRS}
+${GEOGRAPHYCLIB_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} 
 ${Python3_LIBRARIES}
 ${MAVLINK_LIBS}
 ${OpenCV_LIBS}
+${GEOGRAPHYCLIB_LIBS}
 ${ONNX_LIBS}
 pthread
 dl
@@ -91,7 +96,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY ${G_BIN_DIR}
                       LIBRARY_OUTPUT_DIRECTORY ${G_BIN_DIR}
                       ARCHIVE_OUTPUT_DIRECTORY ${G_BIN_DIR}
-
                       RUNTIME_OUTPUT_DIRECTORY_RELEASE ${G_BIN_DIR}
                       RUNTIME_OUTPUT_DIRECTORY_DEBUG ${G_BIN_DIR}
                       )
@@ -105,6 +109,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd")
 
 elseif(LINUX)
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,-rpath,./")
 endif()
 
 add_custom_command(TARGET ${PROJECT_NAME}
@@ -112,6 +117,20 @@ add_custom_command(TARGET ${PROJECT_NAME}
                     COMMAND ${CMAKE_COMMAND} -E copy
                     ${CMAKE_SOURCE_DIR}/pylib/pycore_test.py
                     ${G_BIN_DIR}/pycore_test.py
+                    )
+
+add_custom_command(TARGET ${PROJECT_NAME}
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy
+                    ${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime.so.1.15.0
+                    ${G_BIN_DIR}
+                    )
+
+add_custom_command(TARGET ${PROJECT_NAME}
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy
+                    ${CMAKE_SOURCE_DIR}/third_party/georgraphiclib/lib/libGeographicLib.so.23.1.0
+                    ${G_BIN_DIR}/libGeographicLib.so.23
                     )
 
 file(COPY ${CMAKE_SOURCE_DIR}/data DESTINATION ${G_BIN_DIR})

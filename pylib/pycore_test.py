@@ -17,5 +17,9 @@ if __name__ == "__main__":
 
     unit_core.test_opencv(str("data/test.jpg"))
 
+    unit_core.test_geographicallib()
+
     unit_core.test_onnx(str("data/test_training_model_2.onnx"))
+
+    
 
