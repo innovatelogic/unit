@@ -97,9 +97,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
                       LIBRARY_OUTPUT_DIRECTORY ${G_BIN_DIR}
                       ARCHIVE_OUTPUT_DIRECTORY ${G_BIN_DIR}
                       RUNTIME_OUTPUT_DIRECTORY_RELEASE ${G_BIN_DIR}
-                      RUNTIME_OUTPUT_DIRECTORY_DEBUG ${G_BIN_DIR}
-                      )
-
+                      RUNTIME_OUTPUT_DIRECTORY_DEBUG ${G_BIN_DIR})
 
 #target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
@@ -112,28 +110,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,-rpath,./")
 endif()
 
+if (LINUX)
 add_custom_command(TARGET ${PROJECT_NAME}
                     POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CMAKE_SOURCE_DIR}/pylib/pycore_test.py
-                    ${G_BIN_DIR}/pycore_test.py
-                    )
-
-add_custom_command(TARGET ${PROJECT_NAME}
-                    POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CMAKE_SOURCE_DIR}/third_party/onnxruntime/Linux/libonnxruntime.so.1.15.0
-                    ${G_BIN_DIR}
-                    )
-
-add_custom_command(TARGET ${PROJECT_NAME}
-                    POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CMAKE_SOURCE_DIR}/third_party/georgraphiclib/lib/libGeographicLib.so.23.1.0
-                    ${G_BIN_DIR}/libGeographicLib.so.23
-                    )
-
-file(COPY ${CMAKE_SOURCE_DIR}/data DESTINATION ${G_BIN_DIR})
+                    COMMAND ${CMAKE_SOURCE_DIR}/build/deploy_linux.sh
+                    ${CMAKE_SOURCE_DIR}
+                    ${G_BIN_DIR})
+endif()
 
 add_subdirectory(ut)
 
