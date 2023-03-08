@@ -17,8 +17,8 @@ message( STATUS "Python3_INCLUDE_DIR: " ${Python3_INCLUDE_DIRS} )
 message( STATUS "Python3_LIBRARIES: " ${Python3_LIBRARIES} )
 
 if (LINUX)
-#set("OpenCV_DIR" /mnt/d/Projects/opencv_build/opencv/build)
-#find_package(OpenCV REQUIRED)
+set(OpenCV_DIR /mnt/d/Projects/opencv_build/opencv/build)
+find_package(OpenCV REQUIRED PATHS "${CMAKE_SOURCE_DIR}/third_party/opencv")
 
 find_package(MAVSDK REQUIRED)
 set(MAVLINK_LIBS MAVSDK::mavsdk

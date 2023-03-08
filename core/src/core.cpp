@@ -13,7 +13,7 @@
 
 #include <mavlink/v2.0/minimal/mavlink.h>
 
-//#include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 
 #include "core/session/experimental_onnxruntime_cxx_api.h"
 #endif //__linux__
@@ -138,7 +138,7 @@ void UCore::test_opencv(const std::string &path)
 #if __linux__ 
     std::cout << "Test call opencv " << std::endl;
 
- /*   using namespace cv;
+    using namespace cv;
     
     Mat image;
     image = imread( path.c_str(), 1 );
@@ -146,7 +146,7 @@ void UCore::test_opencv(const std::string &path)
     {
         std::cout << "No image data" << std::endl;
         return;
-    }*/
+    }
     std::cout << "image read ok" << std::endl;
 #endif
 }
